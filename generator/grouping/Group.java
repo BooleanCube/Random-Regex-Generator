@@ -14,6 +14,7 @@ public class Group {
     }
 
     public String getValue() {
+        if(group.equals("")) return group;
         if(type == GroupType.SINGLE) {
             int idx = 0;
             while((idx = group.indexOf("-")) > 0) {
