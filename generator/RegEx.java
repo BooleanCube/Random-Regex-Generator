@@ -4,6 +4,7 @@ import generator.grouping.Group;
 import generator.grouping.GroupType;
 
 import java.util.ArrayDeque;
+import java.util.Stack;
 
 public class RegEx {
 
@@ -72,11 +73,21 @@ public class RegEx {
 
     public boolean isValid() {
         regex = regex.toLowerCase();
-        for(char c : regex.toCharArray())
+        char[] chars = regex.toCharArray();
+        for(char c : chars)
             if(!Constants.OPERATIONS.contains(String.valueOf(c)) &&
                     !Constants.VALUES.contains(String.valueOf(c)) &&
                     !Constants.FORMATTING.contains(String.valueOf(c))) return false;
-        return true;
+        Stack<Character> grouping = new Stack<>();
+        char prev = '\u0000';
+        for(char c : chars) {
+            if(c == '[' || c == '(') grouping.push(c);
+            else if(c == '^' && prev != '[') return false;
+            else if(c == ']' && !grouping.isEmpty() && grouping.pop() != '[') return false;
+            else if(c == ')' && !grouping.isEmpty() && grouping.pop() != '(') return false;
+            prev = c;
+        }
+        return grouping.isEmpty();
     }
 
 }
