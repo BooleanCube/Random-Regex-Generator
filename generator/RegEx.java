@@ -20,7 +20,6 @@ public class RegEx {
         ArrayDeque<Group> groups = new ArrayDeque<>();
         for(char c : splitRegex) {
             if(c == '[') groups.addLast(new Group(GroupType.SINGLE, ""));
-            //else if(c == '(') groups.addLast(new Group(GroupType.MULTIPLE, ""));
             else if(groups.size() == 0) simplifiedGroups.append(c);
             else if(c == '^') groups.peekLast().type = GroupType.NOTSINGLE;
             else if(c == ']') {    // || c == ')'
@@ -31,7 +30,6 @@ public class RegEx {
             else {
                 Group currentGroup = groups.peekLast();
                 if(!Operations.isOperation(c) ||
-                        //currentGroup.type == GroupType.MULTIPLE ||
                         c == '-' || c == '.')
                     currentGroup.group += c;
             }
