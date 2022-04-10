@@ -63,7 +63,6 @@ public class RegEx {
                     break;
                 }
             if(exit) break;
-            System.out.println(gen);
             gen = new StringBuilder();
         }
         return gen.toString();
