@@ -83,13 +83,12 @@ public class RegEx {
     public boolean isValid() {
         regex = regex.toLowerCase();
         char[] chars = regex.toCharArray();
-        for(char c : chars)
-            if(!Constants.OPERATIONS.contains(String.valueOf(c)) &&
-                    !Constants.VALUES.contains(String.valueOf(c)) &&
-                    !Constants.FORMATTING.contains(String.valueOf(c))) return false;
         Stack<Character> grouping = new Stack<>();
         char prev = '\u0000';
         for(char c : chars) {
+            if (!Operations.isOperation(c) &&
+                    !Operations.isValue(c) &&
+                    !Operations.isFormatting(c)) return false;
             if(c == '[' || c == '(') grouping.push(c);
             else if(c == '^' && prev != '[') return false;
             else if(c == ']' && !grouping.isEmpty() && grouping.pop() != '[') return false;

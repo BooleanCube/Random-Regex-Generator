@@ -37,6 +37,10 @@ public class Operations {
         return Constants.FORMATTING.indexOf(op) > -1;
     }
 
+    public static boolean isValue(char op) {
+        return Constants.VALUES.indexOf(op) > -1;
+    }
+
     public static String getPrecedingValue(StringBuilder sg, int idx) {
         if(idx < 1) return "";
         if(sg.charAt(idx-1) == ')') return sg.substring(sg.substring(0,idx-1).lastIndexOf("(")+1, idx-1);
