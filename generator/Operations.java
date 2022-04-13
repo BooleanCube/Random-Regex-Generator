@@ -40,24 +40,38 @@ public class Operations {
     public static String getPrecedingValue(StringBuilder sg, int idx) {
         if(idx < 1) return "";
         if(sg.charAt(idx-1) == ')') return sg.substring(sg.substring(0,idx-1).lastIndexOf("(")+1, idx-1);
+        if(sg.charAt(idx-1) == '\\') return "\\" + sg.charAt(idx);
+        if(isOperation(sg.charAt(idx-1))) return getPrecedingValue(sg,idx-1) + sg.charAt(idx);
         return String.valueOf(sg.charAt(idx-1));
     }
 
     public static String getPrecedingValue(String sg, int idx) {
         if(idx < 1) return "";
         if(sg.charAt(idx-1) == ')') return sg.substring(sg.substring(0,idx-1).lastIndexOf("(")+1, idx-1);
+        if(isOperation(sg.charAt(idx-1))) return getPrecedingValue(sg,idx-1) + sg.charAt(idx);
+        if(sg.charAt(idx-1) == '\\') return "\\" + sg.charAt(idx);
         return String.valueOf(sg.charAt(idx-1));
     }
 
     public static String getProceedingValue(StringBuilder sg, int idx) {
         if(idx >= sg.length()-1) return "";
-        if(sg.charAt(idx+1) == '(') return sg.substring(idx+1, idx+1+sg.substring(idx+2).indexOf(")")+2);
+        int end = idx+1+sg.substring(idx+2).indexOf(")")+2;
+        if(sg.charAt(idx+1) == '(') {
+            String res = sg.substring(idx+1, end);
+            if(sg.length() > end && isOperation(sg.charAt(end))) return res + sg.charAt(end);
+            else return res;
+        }
         return String.valueOf(sg.charAt(idx+1));
     }
 
     public static String getProceedingValue(String sg, int idx) {
         if(idx >= sg.length()-1) return "";
-        if(sg.charAt(idx+1) == '(') return sg.substring(idx+1, sg.substring(idx+2).indexOf(")")+1);
+        int end = idx+1+sg.substring(idx+2).indexOf(")")+2;
+        if(sg.charAt(idx+1) == '(') {
+            String res = sg.substring(idx+1, end);
+            if(sg.length() > end && isOperation(sg.charAt(end))) return res + sg.charAt(end);
+            else return res;
+        }
         return String.valueOf(sg.charAt(idx+1));
     }
 

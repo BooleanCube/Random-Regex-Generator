@@ -38,31 +38,43 @@ public class RegEx {
         StringBuilder gen = new StringBuilder();
         while(true) {
             char prev = '\u0000';
-            int i = 0, skipNext = 0;
+            int i = 0, skipNext = -1;
             for(char c : splitRegex) {
-                if(prev == '\\') { prev = c; continue; }
+                if(prev == '\\') { prev = c; gen.append("\\").append(c); continue; }
                 String res = "";
-                if(Operations.isOperation(c)) {
+                if(i<skipNext) { i++; prev = c; continue; }
+                else if(Operations.isOperation(c)) {
                     String pre = Operations.getPrecedingValue(simplifiedGroups, i);
                     String pro = Operations.getProceedingValue(simplifiedGroups, i);
                     if(c == '|') {
                         gen = new StringBuilder(gen.substring(0, gen.length()-pre.length()));
+                        i-=pre.length();
                         skipNext = i+pro.length()+1;
                     } else if(c == '?') gen = new StringBuilder(gen.substring(0, gen.length()-pre.length()));
                     res = Operations.performOperation(c, pre, pro);
-                } else if(Constants.FORMATTING.indexOf(c) == -1 && i>=skipNext) res = String.valueOf(c);
+                }
+                else if(Constants.FORMATTING.indexOf(c) == -1) res = String.valueOf(c);
                 gen.append(res);
                 prev = c; ++i;
             }
             simplifiedGroups = new StringBuilder(gen);
             splitRegex = simplifiedGroups.toString().toCharArray();
             boolean exit = true;
-            for(char c : splitRegex)
-                if(Operations.isOperation(c) || Operations.isFormatting(c)) {
+            prev = '\u0000';
+            for(char c : splitRegex) {
+                if(Operations.isOperation(c) && prev != '\\') {
                     exit = false;
                     break;
                 }
-            if(exit) break;
+                prev = c;
+            }
+            if(exit) {
+                StringBuilder last = new StringBuilder();
+                for (char c : splitRegex)
+                    if (!Operations.isFormatting(c)) last.append(c);
+                gen = last;
+                break;
+            }
             gen = new StringBuilder();
         }
         return gen.toString();
